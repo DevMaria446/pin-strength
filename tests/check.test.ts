@@ -31,7 +31,7 @@ describe("checkPinStrength", () => {
 
   it("uses custom blacklist", () => {
     const result = checkPinStrength("9999", {
-      blacklist: ["9999"]
+      blacklist: ["9999"],
     });
 
     expect(result.reasons).toContain("PIN is commonly used");
@@ -90,4 +90,25 @@ describe("checkPinStrength", () => {
     expect(result.score).toBeGreaterThanOrEqual(0);
     expect(result.score).toBeLessThanOrEqual(100);
   });
+});
+
+// Keypad pattern tests
+it("detects vertical keypad pattern (2580)", () => {
+  const result = checkPinStrength("2580");
+  expect(result.reasons).toContain("Common keypad pattern detected");
+});
+
+it("detects diagonal keypad pattern (1357)", () => {
+  const result = checkPinStrength("1590");
+  expect(result.reasons).toContain("Common keypad pattern detected");
+});
+
+it("detects corner keypad pattern (1379)", () => {
+  const result = checkPinStrength("1379");
+  expect(result.reasons).toContain("Common keypad pattern detected");
+});
+
+it("does not flag random PIN as keypad pattern", () => {
+  const result = checkPinStrength("8472");
+  expect(result.reasons).not.toContain("Common keypad pattern detected");
 });
