@@ -16,6 +16,7 @@ const RULES: PinRule[] = [
   repeatedPatternRule,
   blacklistRule,
   keypadRule,
+  
 ];
 
 export function checkPinStrength(
