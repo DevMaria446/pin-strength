@@ -6,7 +6,6 @@ import { sequentialRule } from "./rules/sequential.rule";
 import { palindromeRule } from "./rules/palindrome.rule";
 import { repeatedPatternRule } from "./rules/repeatedPattern.rule";
 import { blacklistRule } from "./rules/blacklist.rule";
-import { keypadRule } from "./rules/keypad.rule";
 
 const RULES: PinRule[] = [
   lengthRule,
@@ -15,8 +14,6 @@ const RULES: PinRule[] = [
   palindromeRule,
   repeatedPatternRule,
   blacklistRule,
-  keypadRule,
-  
 ];
 
 export function checkPinStrength(

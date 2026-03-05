@@ -91,37 +91,3 @@ describe("checkPinStrength", () => {
     expect(result.score).toBeLessThanOrEqual(100);
   });
 });
-
-// Keypad pattern tests
-it("detects vertical keypad pattern (2580) and applies penalty", () => {
-  const patternResult = checkPinStrength("2580");
-  const randomResult = checkPinStrength("2581"); // Similar but not a pattern
-
-  expect(patternResult.reasons).toContain("Common keypad pattern detected");
-  expect(patternResult.score).toBeLessThan(randomResult.score);
-  expect(patternResult.score).toBe(65); // 100 - 35 penalty
-});
-
-it("detects diagonal keypad pattern (1590) and applies penalty", () => {
-  const result = checkPinStrength("1590");
-
-  expect(result.reasons).toContain("Common keypad pattern detected");
-  expect(result.score).toBe(65); // 100 - 35 penalty
-  expect(result.strength).toBe("medium");
-});
-
-it("detects corner keypad pattern (1379) and applies penalty", () => {
-  const result = checkPinStrength("1379");
-
-  expect(result.reasons).toContain("Common keypad pattern detected");
-  expect(result.score).toBe(65); // 100 - 35 penalty
-  expect(result.strength).toBe("medium");
-});
-
-it("does not flag random PIN as keypad pattern", () => {
-  const result = checkPinStrength("8472");
-
-  expect(result.reasons).not.toContain("Common keypad pattern detected");
-  expect(result.score).toBe(100);
-  expect(result.strength).toBe("strong");
-});
