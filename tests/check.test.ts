@@ -221,4 +221,37 @@ describe("checkPinStrength", () => {
     expect(result.score).toBe(100);
     expect(result.strength).toBe("strong");
   });
+  // Tests for longer PINs with keypad patterns as substrings
+  it("detects keypad pattern embedded in longer PIN", () => {
+    const result = checkPinStrength("0125809"); // Contains "2580"
+    expect(result.reasons).toContain("Common keypad pattern detected");
+  });
+
+  it("detects keypad pattern with prefix and suffix", () => {
+    const result = checkPinStrength("x1379x".replace(/x/g, "9")); // "913799" contains "1379"
+    expect(result.reasons).toContain("Common keypad pattern detected");
+  });
+
+  it("does not over-detect on similar but non-pattern longer PIN", () => {
+    // "258109" is similar to "2580" but doesn't contain the full pattern
+    const result = checkPinStrength("258109");
+    expect(result.reasons).not.toContain("Common keypad pattern detected");
+  });
+
+  it("keypad pattern PIN scores lower than similar non-pattern PIN", () => {
+    const patternResult = checkPinStrength("2580");
+    const randomResult = checkPinStrength("2581"); // Similar but not a pattern
+
+    expect(patternResult.reasons).toContain("Common keypad pattern detected");
+    expect(randomResult.reasons).not.toContain(
+      "Common keypad pattern detected",
+    );
+    expect(patternResult.score).toBeLessThan(randomResult.score);
+  });
+
+  it("scores stay within valid bounds for keypad patterns", () => {
+    const result = checkPinStrength("2580");
+    expect(result.score).toBeGreaterThanOrEqual(0);
+    expect(result.score).toBeLessThanOrEqual(100);
+  });
 });

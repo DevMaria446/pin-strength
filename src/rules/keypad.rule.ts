@@ -6,7 +6,8 @@ import { PinRule } from "../types";
 // 7 8 9
 //   0
 
-const KEYPAD_PATTERNS = [
+// Use a Set for O(1) exact lookups and automatic deduplication
+const KEYPAD_PATTERNS = new Set<string>([
   // Vertical columns
   "147",
   "1470",
@@ -35,9 +36,6 @@ const KEYPAD_PATTERNS = [
   "7931",
   "3197",
   "9713",
-  // Middle cross
-  "2580",
-  "0852",
   // Common visual patterns
   "1234",
   "4567",
@@ -52,22 +50,27 @@ const KEYPAD_PATTERNS = [
   "7412",
   "9874",
   "3216",
-];
+]);
+
+// Array version for substring scanning (patterns with length >= 4)
+const KEYPAD_PATTERNS_LIST = Array.from(KEYPAD_PATTERNS).filter(
+  (p) => p.length >= 4,
+);
 
 export const keypadRule: PinRule = {
   name: "keypad-pattern",
   penalty: 35,
   reason: "Common keypad pattern detected",
   check(pin: string): boolean {
-    // Check if PIN matches any known keypad pattern
-    if (KEYPAD_PATTERNS.includes(pin)) {
+    // Check if PIN matches any known keypad pattern (O(1) lookup)
+    if (KEYPAD_PATTERNS.has(pin)) {
       return true;
     }
 
     // Check if PIN contains a keypad pattern as substring (for longer PINs)
     if (pin.length > 4) {
-      for (const pattern of KEYPAD_PATTERNS) {
-        if (pattern.length >= 4 && pin.includes(pattern)) {
+      for (const pattern of KEYPAD_PATTERNS_LIST) {
+        if (pin.includes(pattern)) {
           return true;
         }
       }
